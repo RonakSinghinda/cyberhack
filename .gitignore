@@ -1,2 +1,19 @@
-# Nested repo folder — not part of extension
+# Workspace
+.vscode/
+.idea/
+.DS_Store
+node_modules/
+
+# Browser Extension
+dist/
+*.log
+
+# Web App
+webapp/frontend/node_modules/
+webapp/frontend/dist/
+webapp/backend/node_modules/
+webapp/backend/.env
+
+# Legacy/Backup
 cyberhack/
+webapp/node_modules/
