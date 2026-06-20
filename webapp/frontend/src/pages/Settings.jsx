@@ -214,16 +214,19 @@ export default function Settings() {
             </div>
 
             {/* Code Display */}
-            <pre style={{
-              background: '#030712', border: '1px solid var(--border)', borderRadius: 8, padding: 12, fontSize: 11,
-              fontFamily: 'JetBrains Mono, monospace', color: 'var(--text-primary)', overflowX: 'auto', margin: 0, lineHeight: 1.4
-            }}>
-              {docTab === 'curl' && `curl -X POST "http://localhost:5000/api/v1/scan" \\
+            {(() => {
+              const apiOrigin = (window.location.port === '5173' || window.location.port === '5174') ? 'http://localhost:5000' : window.location.origin;
+              return (
+                <pre style={{
+                  background: '#030712', border: '1px solid var(--border)', borderRadius: 8, padding: 12, fontSize: 11,
+                  fontFamily: 'JetBrains Mono, monospace', color: 'var(--text-primary)', overflowX: 'auto', margin: 0, lineHeight: 1.4
+                }}>
+                  {docTab === 'curl' && `curl -X POST "${apiOrigin}/api/v1/scan" \\
   -H "x-api-key: ${apiKey || 'YOUR_API_KEY'}" \\
   -H "Content-Type: application/json" \\
   -d '{"text": "Sending payload to routing node: 5678-9012-3456"}'`}
 
-              {docTab === 'js' && `const response = await fetch("http://localhost:5000/api/v1/scan", {
+                  {docTab === 'js' && `const response = await fetch("${apiOrigin}/api/v1/scan", {
   method: "POST",
   headers: {
     "x-api-key": "${apiKey || 'YOUR_API_KEY'}",
@@ -236,9 +239,9 @@ export default function Settings() {
 const data = await response.json();
 console.log(data.redacted_text);`}
 
-              {docTab === 'python' && `import requests
+                  {docTab === 'python' && `import requests
 
-url = "http://localhost:5000/api/v1/scan"
+url = "${apiOrigin}/api/v1/scan"
 headers = {
     "x-api-key": "${apiKey || 'YOUR_API_KEY'}",
     "Content-Type": "application/json"
@@ -249,7 +252,9 @@ data = {
 
 res = requests.post(url, headers=headers, json=data).json()
 print(res["redacted_text"])`}
-            </pre>
+                </pre>
+              );
+            })()}
           </div>
         </div>
 

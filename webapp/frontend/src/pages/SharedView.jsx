@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { Shield, Lock, Eye, Copy, Check, AlertTriangle } from 'lucide-react';
 import axios from 'axios';
 
-const api = axios.create({ baseURL: 'http://localhost:5000/api' });
+const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api' });
 
 export default function SharedView() {
   const { id } = useParams();
