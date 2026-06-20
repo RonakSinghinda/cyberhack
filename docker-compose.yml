@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./webapp/backend
+    container_name: safesearch-backend
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      # If using local MongoDB container, keep standard string below. 
+      # If using MongoDB Atlas, replace with: mongodb+srv://username:password@cluster...
+      - MONGO_URI=mongodb://mongodb:27017/cyberhack
+      - JWT_SECRET=cyberhack_prod_jwt_secret_key_987654!
+      - PORT=5000
+    depends_on:
+      - mongodb
+
+  frontend:
+    build: ./webapp/frontend
+    container_name: safesearch-frontend
+    restart: always
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+  mongodb:
+    image: mongo:latest
+    container_name: safesearch-mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
