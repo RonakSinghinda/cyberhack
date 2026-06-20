@@ -10,19 +10,29 @@ import Scanner from './pages/Scanner';
 import Redact from './pages/Redact';
 import History from './pages/History';
 import Settings from './pages/Settings';
+import Compliance from './pages/Compliance';
+import SecureShare from './pages/SecureShare';
+import SharedView from './pages/SharedView';
+import BulkAudit from './pages/BulkAudit';
+
+const P = ({ children }) => <ProtectedRoute><Layout>{children}</Layout></ProtectedRoute>;
 
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/" element={<ProtectedRoute><Layout><Home /></Layout></ProtectedRoute>} />
-          <Route path="/scan" element={<ProtectedRoute><Layout><Scanner /></Layout></ProtectedRoute>} />
-          <Route path="/redact" element={<ProtectedRoute><Layout><Redact /></Layout></ProtectedRoute>} />
-          <Route path="/history" element={<ProtectedRoute><Layout><History /></Layout></ProtectedRoute>} />
-          <Route path="/settings" element={<ProtectedRoute><Layout><Settings /></Layout></ProtectedRoute>} />
+          <Route path="/login"       element={<Login />} />
+          <Route path="/register"    element={<Register />} />
+          <Route path="/shared/:id"  element={<SharedView />} />
+          <Route path="/"            element={<P><Home /></P>} />
+          <Route path="/scan"        element={<P><Scanner /></P>} />
+          <Route path="/redact"      element={<P><Redact /></P>} />
+          <Route path="/compliance"  element={<P><Compliance /></P>} />
+          <Route path="/share"       element={<P><SecureShare /></P>} />
+          <Route path="/bulk"        element={<P><BulkAudit /></P>} />
+          <Route path="/history"     element={<P><History /></P>} />
+          <Route path="/settings"    element={<P><Settings /></P>} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

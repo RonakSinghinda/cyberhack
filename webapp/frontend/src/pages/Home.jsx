@@ -1,64 +1,212 @@
 // frontend/src/pages/Home.jsx
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Zap, Lock, BarChart3, Scissors, Search } from 'lucide-react';
+import {
+  FileScan, Scissors, Shield, Share2, FileStack,
+  TrendingUp, AlertTriangle, CheckCircle, Activity,
+  ArrowRight, Zap
+} from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import api from '../api/axios';
+
+const TOOLS = [
+  {
+    icon: FileScan, label: 'Content Scanner', path: '/scan',
+    desc: 'Detect PII, credentials & financial data across text, PDF, DOCX & images.'
+  },
+  {
+    icon: Scissors, label: 'Redaction Studio', path: '/redact',
+    desc: '3-step editor — mask findings with Black Bar, Placeholder or Generic styles.'
+  },
+  {
+    icon: Shield, label: 'Compliance Shield', path: '/compliance',
+    desc: 'Audit content against GDPR, PCI-DSS, and HIPAA regulations instantly.'
+  },
+  {
+    icon: Share2, label: 'Secure Share', path: '/share',
+    desc: 'Generate encrypted, self-destructing sharing links with password protection.'
+  },
+  {
+    icon: FileStack, label: 'Bulk Audit', path: '/bulk',
+    desc: 'Scan dozens of documents simultaneously — get an aggregated risk report.'
+  },
+];
 
 export default function Home() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [scans, setScans] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const features = [
-    { icon: <Search className="text-blue-400" />, title: 'Deep Scan', desc: 'Advanced regex & NLP detection for 15+ sensitive data categories.' },
-    { icon: <Scissors className="text-purple-400" />, title: 'Redaction Studio', desc: 'One-click masking with multiple styles: Black Bar, Placeholder, or Fakes.' },
-    { icon: <Lock className="text-green-400" />, title: 'Privacy First', desc: 'No raw content ever touches our database. Only metadata is stored.' },
-    { icon: <Zap className="text-yellow-400" />, title: 'Multi-Format', desc: 'Support for PDF, DOCX, TXT, and AI-powered OCR for images.' },
-    { icon: <BarChart3 className="text-pink-400" />, title: 'Insights', desc: 'Track your sharing safety trends with a personal risk dashboard.' },
-    { icon: <Shield className="text-cyan-400" />, title: 'Real-time Protection', desc: 'Complemented by our browser extension for search query safety.' },
-  ];
+  useEffect(() => {
+    api.get('/scan/history')
+      .then(r => setScans(r.data))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  const totalScans = scans.length;
+  const avgRisk = totalScans > 0 ? Math.round(scans.reduce((a, s) => a + s.risk_score, 0) / totalScans) : 0;
+  const highRisk = scans.filter(s => s.risk_score >= 60).length;
+  const cleanScans = scans.filter(s => s.risk_score === 0).length;
+
+  const riskColor = s => s >= 60 ? 'var(--danger)' : s >= 30 ? 'var(--warn)' : 'var(--accent)';
+  const recentScans = scans.slice(0, 5);
+
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const firstName = user?.name?.split(' ')[0] || 'there';
 
   return (
-    <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-      {/* Hero */}
-      <section style={{ textAlign: 'center', padding: '60px 0 80px' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 99, background: 'rgba(59,130,246,0.1)', color: 'var(--accent)', fontSize: 12, fontWeight: 600, marginBottom: 24, border: '1px solid var(--accent-glow)' }}>
-          <Zap size={14} /> Intelligence-Driven Privacy
-        </div>
-        <h1 style={{ fontSize: 48, fontWeight: 800, marginBottom: 20, lineHeight: 1.1, letterSpacing: '-0.02em' }}>
-          Stop <span style={{ background: 'linear-gradient(90deg, #3b82f6, #a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Oversharing</span>.<br />
-          Start Protecting.
-        </h1>
-        <p style={{ fontSize: 18, color: 'var(--text-secondary)', marginBottom: 36, maxWidth: 600, margin: '0 auto 40px' }}>
-          SafeSearch AI acts as a pre-share checkpoint. Scan your documents and messages for sensitive data before they leave your hands.
-        </p>
-        <div style={{ display: 'flex', gap: 16, justifyContent: 'center' }}>
-          <button className="btn btn-primary" style={{ padding: '14px 32px', fontSize: 16 }} onClick={() => navigate('/')}>
-            Get Started — It's Free
-          </button>
-          <button className="btn btn-ghost" style={{ padding: '14px 32px', fontSize: 16 }}>
-            Documentation
-          </button>
-        </div>
-      </section>
+    <div style={{ maxWidth: 1100, margin: '0 auto', position: 'relative' }}>
+      {/* Optional World Map Grid Background Effect behind Hero */}
+      <div style={{
+        position: 'absolute', top: -32, right: -36, width: '450px', height: '300px',
+        opacity: '0.04', pointerEvents: 'none', mixBlendMode: 'screen',
+        backgroundImage: `radial-gradient(circle at center, var(--accent) 0%, transparent 70%)`
+      }} />
 
-      {/* Grid */}
-      <section style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, marginBottom: 80 }}>
-        {features.map((f, i) => (
-          <div key={i} className="card" style={{ padding: 32, transition: 'transform 0.2s', cursor: 'default' }}>
-            <div style={{ marginBottom: 20, width: 44, height: 44, borderRadius: 12, background: 'var(--bg-hover)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {f.icon}
+      {/* Header */}
+      <div style={{ marginBottom: 36 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            padding: '4px 12px', borderRadius: 999,
+            background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)',
+            fontSize: 11, fontWeight: 600, color: 'var(--accent)', letterSpacing: '0.5px'
+          }}>
+            <Activity size={11} /> DLP Control Center
+          </div>
+        </div>
+        <h1 className="dashboard-title" style={{ marginBottom: 8 }}>
+          {greeting}, {firstName} 👋
+        </h1>
+        <p style={{ color: 'var(--text-secondary)', fontSize: 15 }}>
+          Here's your data privacy overview for today.
+        </p>
+      </div>
+
+      {/* Stats */}
+      <div className="metrics-grid" style={{ marginBottom: 36 }}>
+        {[
+          { label: 'Total Scans', value: loading ? '—' : totalScans, icon: <FileScan size={18} />, color: 'var(--accent)' },
+          { label: 'Avg. Risk Score', value: loading ? '—' : `${avgRisk}`, icon: <TrendingUp size={18} />, color: riskColor(avgRisk) },
+          { label: 'High Risk Scans', value: loading ? '—' : highRisk, icon: <AlertTriangle size={18} />, color: 'var(--danger)' },
+          { label: 'Clean Scans', value: loading ? '—' : cleanScans, icon: <CheckCircle size={18} />, color: 'var(--accent)' },
+        ].map(m => (
+          <div key={m.label} className="card" style={{ padding: '20px 22px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+              <span className="small-label-premium" style={{ textTransform: 'uppercase', letterSpacing: '1px' }}>{m.label}</span>
+              <div style={{ color: m.color, opacity: 0.8 }}>{m.icon}</div>
             </div>
-            <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 12 }}>{f.title}</h3>
-            <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.6 }}>{f.desc}</p>
+            <div className="kpi-number" style={{ color: m.color }}>
+              {loading ? <div style={{ width: 40, height: 32, background: 'rgba(255,255,255,0.05)', borderRadius: 8 }} /> : m.value}
+            </div>
           </div>
         ))}
-      </section>
+      </div>
 
-      {/* Social Proof / Call to Action */}
-      <section className="card" style={{ textAlign: 'center', background: 'linear-gradient(135deg, #111f35 0%, #070d1a 100%)', border: '1px solid var(--accent-glow)', padding: '60px' }}>
-        <h2 style={{ fontSize: 28, fontWeight: 700, marginBottom: 16 }}>Ready to secure your data?</h2>
-        <p style={{ color: 'var(--text-muted)', marginBottom: 32 }}>Join thousands of privacy-conscious individuals using SafeSearch AI.</p>
-        <button className="btn btn-primary" onClick={() => navigate('/register')}>Create Private Account</button>
-      </section>
+      {/* Feature Cards */}
+      <div style={{ marginBottom: 14 }}>
+        <p className="small-label-premium" style={{ textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 16 }}>DLP TOOLS</p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16 }}>
+          {TOOLS.map(t => {
+            const Icon = t.icon;
+            return (
+              <button key={t.path} onClick={() => navigate(t.path)} className="card" style={{
+                cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left',
+                display: 'flex', flexDirection: 'column', gap: 14, width: '100%'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div style={{
+                    width: 42, height: 42, borderRadius: 12,
+                    background: 'rgba(34, 197, 94, 0.08)', border: '1px solid rgba(34, 197, 94, 0.2)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: 'var(--accent)'
+                  }}>
+                    <Icon size={19} />
+                  </div>
+                  <ArrowRight size={14} style={{ color: 'var(--text-muted)', marginTop: 4 }} />
+                </div>
+                <div>
+                  <div className="card-title-premium" style={{ color: 'var(--text-primary)', marginBottom: 6 }}>{t.label}</div>
+                  <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{t.desc}</div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Recent Activity */}
+      {!loading && recentScans.length > 0 && (
+        <div style={{ marginTop: 36 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <p className="small-label-premium" style={{ textTransform: 'uppercase', letterSpacing: '1.5px' }}>RECENT ACTIVITY</p>
+            <button className="btn btn-ghost" style={{ fontSize: 12, padding: '6px 12px' }} onClick={() => navigate('/history')}>
+              View all <ArrowRight size={12} />
+            </button>
+          </div>
+          <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+            {recentScans.map((s, i) => (
+              <div key={s._id} style={{
+                display: 'flex', alignItems: 'center', gap: 16,
+                padding: '14px 20px',
+                borderBottom: i < recentScans.length - 1 ? '1px solid var(--border)' : 'none',
+                transition: 'background 0.15s'
+              }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(34, 197, 94, 0.04)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+              >
+                <div style={{
+                  width: 40, height: 40, borderRadius: 10,
+                  background: `${riskColor(s.risk_score) === 'var(--accent)' ? 'rgba(34, 197, 94, 0.1)' : riskColor(s.risk_score) === 'var(--warn)' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(239, 68, 68, 0.1)'}`,
+                  border: `1px solid ${riskColor(s.risk_score) === 'var(--accent)' ? 'rgba(34, 197, 94, 0.2)' : riskColor(s.risk_score) === 'var(--warn)' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(239, 68, 68, 0.2)'}`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontWeight: 800, fontSize: 14, color: riskColor(s.risk_score), flexShrink: 0
+                }}>{s.risk_score}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 3 }}>
+                    {s.scan_id} · <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>{s.file_type}</span>
+                  </div>
+                  <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+                    {new Date(s.createdAt).toLocaleString()} · {s.findings_count} findings
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                  {(s.categories_found || []).slice(0, 2).map(c => (
+                    <span key={c} className={`badge badge-${c}`}>{c}</span>
+                  ))}
+                  {(s.categories_found || []).length > 2 && (
+                    <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>+{s.categories_found.length - 2}</span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {!loading && totalScans === 0 && (
+        <div className="card" style={{ marginTop: 40, textAlign: 'center', padding: '60px 40px' }}>
+          <div style={{
+            width: 64, height: 64, borderRadius: 20,
+            background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.15)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            margin: '0 auto 20px', color: 'var(--accent)'
+          }}>
+            <Zap size={28} />
+          </div>
+          <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 10, color: 'var(--text-primary)' }}>Ready to scan your first document?</h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: 14, marginBottom: 24 }}>
+            Run a quick scan and the results will appear here instantly.
+          </p>
+          <button className="btn btn-primary" onClick={() => navigate('/scan')} style={{ padding: '12px 28px' }}>
+            <FileScan size={16} /> Start Scanning
+          </button>
+        </div>
+      )}
     </div>
   );
 }

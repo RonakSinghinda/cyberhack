@@ -12,12 +12,11 @@ const ScanSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Auto-generate scan_id
-ScanSchema.pre('save', async function (next) {
+ScanSchema.pre('save', async function () {
   if (!this.scan_id) {
     const count = await mongoose.model('Scan').countDocuments({ userId: this.userId });
     this.scan_id = `scan_${String(count + 1).padStart(4, '0')}`;
   }
-  next();
 });
 
 module.exports = mongoose.model('Scan', ScanSchema);

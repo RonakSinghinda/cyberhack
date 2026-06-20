@@ -3,44 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SafeSearch AI</title>
+    <title>SafeSearch AI Dashboard</title>
     <link rel="stylesheet" href="popup.css">
-    <!-- Use Google Fonts for a modern, sleek look -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="shield-icon">🛡️</div>
-            <h1>SafeSearch AI</h1>
-        </div>
-        
-        <div class="status-card">
-            <div class="status-indicator active"></div>
-            <p>Protection is <strong>Active</strong></p>
-        </div>
-
-        <div class="settings-group">
-            <label for="sensitivity">Sensitivity Level</label>
-            <select id="sensitivity">
-                <option value="high">High (Maximum Privacy)</option>
-                <option value="medium" selected>Medium (Balanced)</option>
-                <option value="low">Low (Fewer Alerts)</option>
-            </select>
-        </div>
-
-        <div class="stats">
-            <div class="stat-item">
-                <span class="stat-value">0</span>
-                <span class="stat-label">Alerts Today</span>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="brand">
+                <div class="logo-shield">
+                    <span class="pulse-ring"></span>
+                    <span class="icon">🛡️</span>
+                </div>
+                <div class="title-meta">
+                    <h1>SafeSearch AI</h1>
+                    <span class="status-badge secure">Shield Active</span>
+                </div>
             </div>
-            <div class="stat-item">
-                <span class="stat-value">0</span>
-                <span class="stat-label">Redacted</span>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="tab-navigation">
+            <button class="tab-btn active" id="tab-dashboard">Dashboard</button>
+            <button class="tab-btn" id="tab-logs">Security Logs</button>
+        </nav>
+
+        <!-- Main Content View -->
+        <main class="app-body">
+            <!-- View 1: Dashboard -->
+            <div class="view-panel" id="view-dashboard-panel">
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-num" id="stat-alerts">0</span>
+                        <span class="stat-desc">Detections</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-num" id="stat-redacted">0</span>
+                        <span class="stat-desc">Redacted</span>
+                    </div>
+                </div>
+
+                <!-- Sensitivity Profile Settings -->
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h3>Compliance Level</h3>
+                        <span class="info-tag" id="level-badge">Balanced</span>
+                    </div>
+                    <p class="settings-desc">Choose how strict the data scanning rules are when parsing queries.</p>
+                    <div class="sensitivity-slider-wrapper">
+                        <input type="range" id="sensitivity-slider" min="1" max="3" value="2" step="1">
+                        <div class="slider-labels">
+                            <span class="label-low">Relaxed</span>
+                            <span class="label-medium active">Balanced</span>
+                            <span class="label-high">Paranoid</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        
-        <button id="viewLogsBtn" class="primary-btn">View Event Logs</button>
+
+            <!-- View 2: Logs -->
+            <div class="view-panel hidden" id="view-logs-panel">
+                <div class="logs-header">
+                    <h3>Recent Intercepts</h3>
+                    <button class="text-btn-danger" id="clearLogsBtn">Clear Logs</button>
+                </div>
+                <div class="logs-wrapper" id="logs-container">
+                    <!-- Logs dynamically populated -->
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <span>Client-Side Isolation Engine</span>
+            <span>v1.1.0</span>
+        </footer>
     </div>
     <script src="popup.js"></script>
 </body>

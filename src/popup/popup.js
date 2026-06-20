@@ -1,58 +1,135 @@
-// popup.js
+// popup.js - Controller for extension settings popup dashboard
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("SafeSearch AI: Popup initialized.");
+    console.log("SafeSearch AI Popup: Controller initialized.");
 
-    const sensitivitySelect = document.getElementById('sensitivity');
-    const viewLogsBtn = document.getElementById('viewLogsBtn');
+    // Elements
+    const tabDashboard = document.getElementById('tab-dashboard');
+    const tabLogs = document.getElementById('tab-logs');
+    const panelDashboard = document.getElementById('view-dashboard-panel');
+    const panelLogs = document.getElementById('view-logs-panel');
 
-    // Load saved settings and stats
-    chrome.storage.local.get(['sensitivity', 'alertCount', 'redactedCount'], (result) => {
-        if (result.sensitivity) {
-            sensitivitySelect.value = result.sensitivity;
-        }
+    const statAlerts = document.getElementById('stat-alerts');
+    const statRedacted = document.getElementById('stat-redacted');
+
+    const sensitivitySlider = document.getElementById('sensitivity-slider');
+    const levelBadge = document.getElementById('level-badge');
+    const sliderLabels = document.querySelectorAll('.slider-labels span');
+
+    const logsContainer = document.getElementById('logs-container');
+    const clearLogsBtn = document.getElementById('clearLogsBtn');
+
+    // Mappings
+    const valToSensitivity = {
+        '1': 'low',
+        '2': 'medium',
+        '3': 'high'
+    };
+    const sensitivityToVal = {
+        'low': '1',
+        'medium': '2',
+        'high': '3'
+    };
+    const sensitivityLabels = {
+        'low': 'Relaxed',
+        'medium': 'Balanced',
+        'high': 'Paranoid'
+    };
+
+    // --- Tab Interactivity ---
+    tabDashboard.addEventListener('click', () => {
+        tabDashboard.classList.add('active');
+        tabLogs.classList.remove('active');
+        panelDashboard.classList.remove('hidden');
+        panelLogs.classList.add('hidden');
+    });
+
+    tabLogs.addEventListener('click', () => {
+        tabLogs.classList.add('active');
+        tabDashboard.classList.remove('active');
+        panelLogs.classList.remove('hidden');
+        panelDashboard.classList.add('hidden');
+        loadLogs(); // Refresh logs on tab switch
+    });
+
+    // --- Core Operations & Data Binding ---
+    function loadDashboardData() {
+        chrome.storage.local.get(['sensitivity', 'alertCount', 'redactedCount'], (result) => {
+            // Set counts
+            statAlerts.textContent = result.alertCount || 0;
+            statRedacted.textContent = result.redactedCount || 0;
+
+            // Map sensitivity to slider position
+            const sensitivity = result.sensitivity || 'medium';
+            const sliderVal = sensitivityToVal[sensitivity];
+            sensitivitySlider.value = sliderVal;
+            updateSliderUI(sliderVal, sensitivity);
+        });
+    }
+
+    function updateSliderUI(val, sensitivity) {
+        levelBadge.textContent = sensitivityLabels[sensitivity];
         
-        const statValues = document.querySelectorAll('.stat-value');
-        if (statValues.length >= 2) {
-            statValues[0].textContent = result.alertCount || 0;
-            statValues[1].textContent = result.redactedCount || 0;
-        }
-    });
+        // Highlight active text label
+        sliderLabels.forEach(label => label.classList.remove('active'));
+        if (val === '1') document.querySelector('.label-low').classList.add('active');
+        if (val === '2') document.querySelector('.label-medium').classList.add('active');
+        if (val === '3') document.querySelector('.label-high').classList.add('active');
+    }
 
-    // Handle settings change
-    sensitivitySelect.addEventListener('change', (e) => {
-        const newValue = e.target.value;
-        chrome.storage.local.set({ sensitivity: newValue }, () => {
-            console.log(`Sensitivity saved as: ${newValue}`);
+    // Handle range slider updates
+    sensitivitySlider.addEventListener('input', (e) => {
+        const val = e.target.value;
+        const sensitivity = valToSensitivity[val];
+        updateSliderUI(val, sensitivity);
+        
+        chrome.storage.local.set({ sensitivity: sensitivity }, () => {
+            console.log(`Compliance setting updated to: ${sensitivity}`);
         });
     });
 
-    // Phase 7: Log Viewer
-    viewLogsBtn.addEventListener('click', () => {
+    // Load logs list
+    function loadLogs() {
         chrome.storage.local.get({ events: [] }, (data) => {
-            const container = document.querySelector('.container');
-            container.innerHTML = `
-                <div class="header">
-                    <div class="shield-icon" style="font-size: 16px;">📜</div>
-                    <h1>Event Logs</h1>
-                </div>
-                <div id="logs-container" style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
-                    ${data.events.length === 0 ? '<p style="color: var(--text-muted); font-size: 12px;">No events recorded.</p>' : ''}
-                    ${data.events.map(e => `
-                        <div style="background: var(--card-bg); padding: 10px; border-radius: 6px; font-size: 12px; border: 1px solid rgba(255,255,255,0.05);">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                                <strong>${e.action_taken}</strong>
-                                <span style="color: var(--text-muted);">${new Date(e.timestamp).toLocaleTimeString()}</span>
-                            </div>
-                            <div style="color: var(--danger);">${e.risk_category} (${e.severity})</div>
+            if (data.events.length === 0) {
+                logsContainer.innerHTML = `<p style="text-align: center; color: var(--text-secondary); font-size: 11px; margin-top: 20px;">No events recorded.</p>`;
+                return;
+            }
+
+            logsContainer.innerHTML = data.events.map(event => {
+                const formattedTime = new Date(event.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                return `
+                    <div class="log-entry">
+                        <div class="log-entry-meta">
+                            <span class="log-entry-action">${escapeHtml(event.action_taken)}</span>
+                            <span class="log-entry-time">${formattedTime}</span>
                         </div>
-                    `).join('')}
-                </div>
-                <button id="backBtn" class="primary-btn" style="margin-top: 10px;">Back to Settings</button>
-            `;
-            
-            document.getElementById('backBtn').addEventListener('click', () => {
-                location.reload(); // Quick way to reset popup
-            });
+                        <div class="log-entry-detail">${escapeHtml(event.risk_category)} (${escapeHtml(event.severity)})</div>
+                    </div>
+                `;
+            }).join('');
+        });
+    }
+
+    // Clear history logs
+    clearLogsBtn.addEventListener('click', () => {
+        chrome.storage.local.set({ events: [], alertCount: 0, redactedCount: 0 }, () => {
+            loadDashboardData();
+            loadLogs();
+            console.log("Logs cleared successfully.");
         });
     });
+
+    // Helper to sanitize HTML injection
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    // Initialize Dashboard
+    loadDashboardData();
 });

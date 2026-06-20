@@ -9,20 +9,37 @@
     "scripting"
   ],
   "host_permissions": [
+    "*://google.com/*",
     "*://*.google.com/*",
+    "*://bing.com/*",
     "*://*.bing.com/*",
-    "*://*.duckduckgo.com/*"
+    "*://duckduckgo.com/*",
+    "*://*.duckduckgo.com/*",
+    "*://chatgpt.com/*",
+    "*://*.chatgpt.com/*",
+    "*://claude.ai/*",
+    "*://*.claude.ai/*",
+    "*://gemini.google.com/*",
+    "*://*.gemini.google.com/*"
   ],
   "background": {
-    "service_worker": "src/background/background.js",
-    "type": "module"
+    "service_worker": "src/background/background.js"
   },
   "content_scripts": [
     {
       "matches": [
+        "*://google.com/*",
         "*://*.google.com/*",
+        "*://bing.com/*",
         "*://*.bing.com/*",
-        "*://*.duckduckgo.com/*"
+        "*://duckduckgo.com/*",
+        "*://*.duckduckgo.com/*",
+        "*://chatgpt.com/*",
+        "*://*.chatgpt.com/*",
+        "*://claude.ai/*",
+        "*://*.claude.ai/*",
+        "*://gemini.google.com/*",
+        "*://*.gemini.google.com/*"
       ],
       "css": ["src/content/content.css"],
       "js": ["src/content/content.js"],
