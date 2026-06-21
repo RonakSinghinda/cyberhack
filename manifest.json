@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "SafeSearch AI",
+  "name": "DataShield AI",
   "version": "1.0",
   "description": "AI-powered assistant that detects and redacts sensitive information in search queries.",
   "permissions": [
@@ -48,6 +48,6 @@
   ],
   "action": {
     "default_popup": "src/popup/popup.html",
-    "default_title": "SafeSearch AI Settings"
+    "default_title": "DataShield AI Settings"
   }
 }

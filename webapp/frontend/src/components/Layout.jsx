@@ -80,7 +80,7 @@ export default function Layout({ children }) {
               background: 'var(--accent-gradient)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
-            }}>SafeSearch AI</div>
+            }}>DataShield AI</div>
             <div style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.5px' }}>DLP PLATFORM v2.0</div>
           </div>
         </div>

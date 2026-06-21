@@ -138,7 +138,7 @@ export default function Settings() {
               <p className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 8, margin: 0 }}>
                 <Key size={16} style={{ color: 'var(--accent)' }} /> Developer API Key
               </p>
-              <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 4, marginBottom: 0 }}>Integrate SafeSearch AI compliance filtering into external applications.</p>
+              <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 4, marginBottom: 0 }}>Integrate DataShield AI compliance filtering into external applications.</p>
             </div>
           </div>
 

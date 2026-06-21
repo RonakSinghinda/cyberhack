@@ -1,9 +1,9 @@
-/* SafeSearch AI - content.css
+/* DataShield AI - content.css
    NOTE: Banner layout/position is set via JS inline styles.
    This file only provides the warning glow for the target input. */
 
 /* Pulsing red glow on input that contains sensitive data */
-.safesearch-warning-glow {
+.datashield-warning-glow {
     outline: 2px solid rgba(239, 68, 68, 0.7) !important;
     box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15), 0 0 20px rgba(239, 68, 68, 0.1) !important;
     transition: box-shadow 0.3s ease, outline 0.3s ease !important;

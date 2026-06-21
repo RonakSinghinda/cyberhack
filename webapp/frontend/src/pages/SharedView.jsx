@@ -118,7 +118,7 @@ export default function SharedView() {
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
           <Shield size={22} style={{ color: 'var(--accent)' }} />
-          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--accent)' }}>SafeSearch AI — Secure Share</span>
+          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--accent)' }}>DataShield AI — Secure Share</span>
         </div>
 
         {selfDestructed && (

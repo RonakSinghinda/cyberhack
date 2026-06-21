@@ -1,6 +1,6 @@
 // popup.js - Controller for extension settings popup dashboard
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("SafeSearch AI Popup: Controller initialized.");
+    console.log("DataShield AI Popup: Controller initialized.");
 
     // Elements
     const tabDashboard = document.getElementById('tab-dashboard');

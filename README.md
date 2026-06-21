@@ -1,4 +1,4 @@
-# SafeSearch AI Ecosystem
+# DataShield AI Ecosystem
 
 A dual-module privacy platform designed to prevent the accidental exposure of sensitive data during real-time searching and content sharing.
 

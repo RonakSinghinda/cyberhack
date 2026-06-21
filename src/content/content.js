@@ -1,9 +1,9 @@
 // ============================================================
-// SafeSearch AI - content.js  v3.0  (Clean Rebuild)
+// DataShield AI - content.js  v3.0  (Clean Rebuild)
 // Injected into: Google, Bing, DuckDuckGo, ChatGPT, Claude, Gemini
 // ============================================================
 
-console.log('[SafeSearch AI] Loaded on:', location.hostname);
+console.log('[DataShield AI] Loaded on:', location.hostname);
 
 // ── State ────────────────────────────────────────────────────
 let lastText      = '';
@@ -108,7 +108,7 @@ function showBanner(inputEl, analysis, originalText) {
     topVal = Math.max(8, Math.min(topVal, window.innerHeight - bannerH - 8));
 
     bannerEl = document.createElement('div');
-    bannerEl.id = 'safesearch-banner';
+    bannerEl.id = 'datashield-banner';
     // Outer container: fixed height, flex column so buttons stay at bottom
     bannerEl.style.cssText =
         'position:fixed!important;' +
@@ -132,7 +132,7 @@ function showBanner(inputEl, analysis, originalText) {
         '<div style="padding:16px 18px 0;flex-shrink:0">' +
             '<div style="display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px;color:#f87171;letter-spacing:.4px;margin-bottom:10px">' +
                 '<span style="font-size:18px">🛡️</span>' +
-                'SafeSearch AI &mdash; ' + escHtml(severity) + ' Risk' +
+                'DataShield AI &mdash; ' + escHtml(severity) + ' Risk' +
             '</div>' +
             '<div style="color:#cbd5e1;line-height:1.5;font-size:13px">' +
                 'Detected: <strong style="color:#fbbf24">' + escHtml(cats) + '</strong><br>' +
@@ -218,10 +218,10 @@ function scan(inputEl) {
 
     clearTimeout(debounceId);
     debounceId = setTimeout(function() {
-        console.log('[SafeSearch AI] Analyzing:', text.substring(0, 60));
+        console.log('[DataShield AI] Analyzing:', text.substring(0, 60));
         sendToBackground({ type: 'QUERY_INTERCEPTED', payload: text }, function(response) {
             if (response && response.risk && response.risk !== 'None') {
-                console.log('[SafeSearch AI] Risk:', response.risk);
+                console.log('[DataShield AI] Risk:', response.risk);
                 showBanner(inputEl, response.analysis, text);
             }
         });
@@ -276,7 +276,7 @@ function attachObserver(el) {
     });
     obs.observe(el, { childList: true, subtree: true, characterData: true });
     observers.push(obs);
-    console.log('[SafeSearch AI] MutationObserver attached to:', el.id || el.className.substring(0,30));
+    console.log('[DataShield AI] MutationObserver attached to:', el.id || el.className.substring(0,30));
 }
 
 function attachKnownElements() {
@@ -342,4 +342,4 @@ document.addEventListener('click', function(e) {
     } catch(e) {}
 }, true);
 
-console.log('[SafeSearch AI] All 3 detection layers active. Ready.');
+console.log('[DataShield AI] All 3 detection layers active. Ready.');

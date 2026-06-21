@@ -66,7 +66,7 @@ export default function Register() {
             <Shield size={26} color="#020617" />
           </div>
           <h1 className="section-title-premium" style={{ marginBottom: 6, color: 'var(--text-primary)' }}>Create your account</h1>
-          <p style={{ color: 'var(--text-secondary)', fontSize: 14 }}>Join SafeSearch AI — Start protecting your data</p>
+          <p style={{ color: 'var(--text-secondary)', fontSize: 14 }}>Join DataShield AI — Start protecting your data</p>
         </div>
 
         <div className="card" style={{ padding: '32px 28px' }}>

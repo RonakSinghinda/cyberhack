@@ -1,5 +1,5 @@
-// background.js - SafeSearch AI background service worker
-console.log("SafeSearch AI: Background service worker initialized.");
+// background.js - DataShield AI background service worker
+console.log("DataShield AI: Background service worker initialized.");
 
 
 // --- Regex Pattern Definitions ---
