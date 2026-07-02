@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 # 🛡️ DataShield AI Ecosystem
 A dual-module, local-first privacy platform designed to prevent accidental data leaks to the cloud. It features a real-time **DLP Chrome Extension** that acts as a browser-level input guardrail, and a **Vite/React Web Application** containing a redaction studio, document scanner, secure sharing portal, and public developer API.
+=======
+# DataShield AI Ecosystem
+
+A dual-module privacy platform designed to prevent the accidental exposure of sensitive data during real-time searching and content sharing.
+>>>>>>> 8f08d1b4a5335f9b41e9ad83bb8497a8646f79b6
 
 ---
 

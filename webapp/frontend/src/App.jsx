@@ -1,5 +1,6 @@
 // frontend/src/App.jsx
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
@@ -18,23 +19,27 @@ import BulkAudit from './pages/BulkAudit';
 const P = ({ children }) => <ProtectedRoute><Layout>{children}</Layout></ProtectedRoute>;
 
 export default function App() {
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '175774828165-8rdv11q0aonla7c5gjserhht8dse58ah.apps.googleusercontent.com';
+
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login"       element={<Login />} />
-          <Route path="/register"    element={<Register />} />
-          <Route path="/shared/:id"  element={<SharedView />} />
-          <Route path="/"            element={<P><Home /></P>} />
-          <Route path="/scan"        element={<P><Scanner /></P>} />
-          <Route path="/redact"      element={<P><Redact /></P>} />
-          <Route path="/compliance"  element={<P><Compliance /></P>} />
-          <Route path="/share"       element={<P><SecureShare /></P>} />
-          <Route path="/bulk"        element={<P><BulkAudit /></P>} />
-          <Route path="/history"     element={<P><History /></P>} />
-          <Route path="/settings"    element={<P><Settings /></P>} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login"       element={<Login />} />
+            <Route path="/register"    element={<Register />} />
+            <Route path="/shared/:id"  element={<SharedView />} />
+            <Route path="/"            element={<P><Home /></P>} />
+            <Route path="/scan"        element={<P><Scanner /></P>} />
+            <Route path="/redact"      element={<P><Redact /></P>} />
+            <Route path="/compliance"  element={<P><Compliance /></P>} />
+            <Route path="/share"       element={<P><SecureShare /></P>} />
+            <Route path="/bulk"        element={<P><BulkAudit /></P>} />
+            <Route path="/history"     element={<P><History /></P>} />
+            <Route path="/settings"    element={<P><Settings /></P>} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </GoogleOAuthProvider>
   );
 }

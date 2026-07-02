@@ -1,6 +1,7 @@
 // frontend/src/pages/Login.jsx
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
 import { Shield, Mail, Lock, ArrowRight, Zap } from 'lucide-react';
 
@@ -8,8 +9,25 @@ export default function Login() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setError('');
+    setLoading(true);
+    try {
+      await loginWithGoogle(credentialResponse.credential);
+      navigate('/');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Google authentication failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setError('Google authentication failed');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -97,6 +115,22 @@ export default function Login() {
               )}
             </button>
           </form>
+
+          <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0 16px', gap: 10 }}>
+            <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--border)' }} />
+            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>OR</span>
+            <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--border)' }} />
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              theme="outline"
+              shape="rectangular"
+              text="signin_with"
+            />
+          </div>
 
           <div style={{
             display: 'flex', alignItems: 'center', gap: 12, margin: '22px 0 0',
