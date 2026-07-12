@@ -445,3 +445,278 @@ body {
   line-height: 1.5;
 }
 
+/* ═══════════════════════════════════════════
+   HISTORY PAGE
+═══════════════════════════════════════════ */
+
+.history-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.history-charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+/* Each row in the scan timeline */
+.history-scan-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  transition: border-color 0.15s ease;
+}
+.history-scan-row:hover {
+  border-color: var(--border-active);
+}
+
+/* Risk score column */
+.history-risk-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 46px;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE LAYOUT — Desktop Sidebar
+═══════════════════════════════════════════ */
+
+/* Desktop sidebar: always visible, fixed on the left */
+.sidebar-desktop {
+  width: 248px;
+  min-height: 100vh;
+  height: 100vh;
+  background: var(--bg-sidebar);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+/* Mobile sidebar: hidden off-screen by default */
+.sidebar-mobile {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 100vh;
+  background: var(--bg-sidebar);
+  backdrop-filter: blur(24px);
+  border-right: 1px solid var(--border);
+  flex-direction: column;
+  z-index: 1000;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 8px 0 32px rgba(0,0,0,0.5);
+}
+.sidebar-mobile.open {
+  transform: translateX(0);
+}
+
+/* Dim overlay behind mobile sidebar */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(2px);
+  z-index: 999;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Mobile top bar: hidden on desktop */
+.mobile-topbar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 56px;
+  background: var(--bg-sidebar);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  flex-shrink: 0;
+}
+
+/* Hamburger button */
+.hamburger-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(34, 197, 94, 0.06);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.hamburger-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-active);
+  color: var(--accent);
+}
+
+/* Sidebar close button: hidden on desktop, visible on mobile */
+.sidebar-close-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  color: var(--text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+.sidebar-close-btn:hover {
+  color: var(--danger);
+  border-color: rgba(239,68,68,0.3);
+}
+
+/* Main content area */
+.main-content {
+  flex: 1;
+  padding: 32px 36px;
+  overflow-y: auto;
+}
+
+/* ═══════════════════════════════════════════
+   MEDIA QUERIES
+═══════════════════════════════════════════ */
+
+/* Tablet & Mobile (≤ 768px) */
+@media (max-width: 768px) {
+  /* Hide the fixed desktop sidebar */
+  .sidebar-desktop {
+    display: none;
+  }
+
+  /* Show the mobile sliding drawer */
+  .sidebar-mobile {
+    display: flex;
+  }
+
+  /* Show the overlay */
+  .sidebar-overlay {
+    display: block;
+  }
+
+  /* Show the top navbar with hamburger */
+  .mobile-topbar {
+    display: flex;
+  }
+
+  /* Show the X close button inside the drawer */
+  .sidebar-close-btn {
+    display: flex;
+  }
+
+  /* Reduce content padding on small screens */
+  .main-content {
+    padding: 20px 16px;
+  }
+
+  /* Make KPI numbers smaller */
+  .kpi-number {
+    font-size: 28px;
+  }
+
+  /* Dashboard title smaller */
+  .dashboard-title {
+    font-size: 28px;
+  }
+
+  /* Section title smaller */
+  .section-title-premium {
+    font-size: 18px;
+  }
+
+  /* Metrics grid — single column on mobile */
+  .metrics-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* History page — stack charts and KPI on mobile */
+  .history-kpi-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+
+  .history-charts-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  /* Scan timeline rows: tighten spacing */
+  .history-scan-row {
+    gap: 10px;
+    padding: 12px 10px;
+  }
+}
+
+/* Tiny phones (≤ 480px) */
+@media (max-width: 480px) {
+  .main-content {
+    padding: 16px 12px;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kpi-number {
+    font-size: 24px;
+  }
+
+  /* History KPI — stack all 3 vertically on tiny phones */
+  .history-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Scan row: collapse risk score to left, info full-width */
+  .history-scan-row {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .history-risk-score {
+    min-width: 52px;
+  }
+}
+
+
