@@ -4,19 +4,13 @@ services:
 
   # ── MongoDB ───────────────────────────────────────
   mongodb:
-    image: mongo:7
+    image: mongo:latest
     container_name: datashield-mongodb
     restart: always
     ports:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
 
   # ── Backend (Node.js API) ─────────────────────────
   backend:
@@ -32,8 +26,7 @@ services:
       - PORT=5000
       - GOOGLE_CLIENT_ID=175774828165-8rdv11q0aonla7c5gjserhht8dse58ah.apps.googleusercontent.com
     depends_on:
-      mongodb:
-        condition: service_healthy
+      - mongodb
 
   # ── Frontend (React + Nginx) ──────────────────────
   frontend:
