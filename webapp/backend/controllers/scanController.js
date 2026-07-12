@@ -1,6 +1,6 @@
 const Scan = require('../models/Scan');
 const { analyzeText } = require('../utils/detection');
-const pdfParse = require('pdf-parse');
+const { PDFParse } = require('pdf-parse');
 const mammoth = require('mammoth');
 
 // POST /api/scan/text
@@ -35,8 +35,13 @@ const extractTextFromFile = async (buffer, filename) => {
   if (ext === 'txt') {
     return buffer.toString('utf-8');
   } else if (ext === 'pdf') {
-    const data = await pdfParse(buffer);
-    return data.text;
+    const parser = new PDFParse({ data: buffer });
+    try {
+      const data = await parser.getText();
+      return data.text;
+    } finally {
+      await parser.destroy().catch(() => {});
+    }
   } else if (ext === 'docx') {
     const result = await mammoth.extractRawText({ buffer: buffer });
     return result.value;
